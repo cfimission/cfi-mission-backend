@@ -2,14 +2,18 @@ import express from 'express';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import cors from 'cors'
+import { config } from 'dotenv';
 const app = express();
+config({
+  path:'./.env'
+})
 const PORT = process.env.PORT || 3000;
 import About  from  './Router/about.js' 
 import Testimonials from './Router/testimonials.js';
 import Gallery from './Router/gallery.js';
 import Home from './Router/home.js'
 import Contact from './Router/contact.js';
-mongoose.connect('mongodb://localhost:27017/mydatabase');
+mongoose.connect(process.env.DB);
 app.use(cors())
 const User = mongoose.model('User', {
   username: String,
@@ -31,11 +35,11 @@ app.use('/contact', Contact)
 
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
-  if (username != "hazrath" && password !== 'hazrath' ){
+  if (username != process.env.uname && password !== process.env.password ){
     return res.status(401).send('Invalid username or password.');
   }
 
-  const token = jwt.sign({ username: 'hazrath' }, 'nmdndsjdsjhsdhjsdjhhjdshjsdjjhds', {
+  const token = jwt.sign({ username: process.env.uname }, process.env.token, {
     expiresIn: '30d',
   });
   console.log(token)
