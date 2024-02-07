@@ -5,11 +5,10 @@ const homeModelSchema = new mongoose.Schema({
     type: [String],
     validate: {
       validator: function (array) {
-        return array.length <= 5;
+        return array.length <= 6;
       },
       message: props => `${props.path} exceeds the limit of 5 images.`
     },
-    required: true
   },
 });
 
