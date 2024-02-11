@@ -29,6 +29,15 @@ router.get('/', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+// Get all Homes
+router.get('/admin', async (req, res) => {
+  try {
+    const homes = await Home.find();
+    res.status(200).json(homes);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 
 // Get a specific Home by ID
