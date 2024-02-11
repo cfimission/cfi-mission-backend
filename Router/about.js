@@ -5,8 +5,9 @@ const router = express.Router();
 
 router.post("/", async (req, res) => {
   try {
-    const { title, description, ImageUrls, dayabout, day, category } = req.body;
+    const { title, description, ImageUrls, dayabout, day, category,sno } = req.body;
     const newDocument = new AboutModel({
+      sno,
       title,
       description,
       ImageUrls,
@@ -25,7 +26,10 @@ router.get("/", async (req, res) => {
   try {
 
     const category = req.query.category;
-    const documents = await AboutModel.find({category});
+    const documents = await AboutModel.aggregate([
+      { $match: { category: category } },
+      { $sort: { sno: 1 } } 
+    ]);
 
     res.json(documents);
   } catch (error) {
@@ -34,8 +38,9 @@ router.get("/", async (req, res) => {
 });
 router.get("/admin", async (req, res) => {
   try {
-    const documents = await AboutModel.find();
-    console.log(documents)
+    const documents = await AboutModel.aggregate([
+      { $sort: { sno: 1 } } 
+    ]);
     res.json(documents);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -56,10 +61,11 @@ router.get("/:id", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   try {
-    const { title, description, ImageUrls, dayabout, day, category } = req.body;
+    console.log(req.body)
+    const { title, description, ImageUrls, dayabout, day, category,sno } = req.body;
     const updatedDocument = await AboutModel.findByIdAndUpdate(
       req.params.id,
-      { title, description, ImageUrls, dayabout, day, category },
+      { title, description, ImageUrls, dayabout, day, category,sno },
       { new: true }
     );
     if (!updatedDocument) {

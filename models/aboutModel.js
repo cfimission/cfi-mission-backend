@@ -3,6 +3,10 @@ import mongoose from "mongoose";
 const validCategories = ["Suresh_Kumar","Cfi_Mission"]; 
 
 const aboutModelSchema = new mongoose.Schema({
+  sno:{
+    type:Number,
+    required:true
+  },
   title: {
     type: String,
     required: true
