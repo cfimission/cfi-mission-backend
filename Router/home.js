@@ -18,11 +18,18 @@ router.post('/', async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     const homes = await Home.find();
-    res.status(200).json(homes);
+    const bannerImage = homes[0].ImageUrls[0];
+    const recentImages = homes[0].ImageUrls.slice(1); 
+    
+    res.status(200).json({
+      bannerImage: bannerImage,
+      recentImages: recentImages
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 // Get a specific Home by ID
 router.get('/:id', async (req, res) => {

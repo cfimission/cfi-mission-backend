@@ -13,7 +13,6 @@ import Testimonials from './Router/testimonials.js';
 import Gallery from './Router/gallery.js';
 import Home from './Router/home.js'
 import Contact from './Router/contact.js';
-mongoose.connect(process.env.DB);
 app.use(cors())
 const User = mongoose.model('User', {
   username: String,
@@ -49,6 +48,9 @@ app.post('/login', async (req, res) => {
 
 
 // Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+mongoose.connect(process.env.DB).then(
+  app.listen(PORT, () => {
+    console.log('Mongodb connected')
+    console.log(`Server is running on http://localhost:${PORT}`);
+  }) 
+)
