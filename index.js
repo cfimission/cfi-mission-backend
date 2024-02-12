@@ -13,6 +13,7 @@ import Testimonials from './Router/testimonials.js';
 import Gallery from './Router/gallery.js';
 import Home from './Router/home.js'
 import Contact from './Router/contact.js';
+import Services from './Router/services.js'
 app.use(cors())
 const User = mongoose.model('User', {
   username: String,
@@ -27,6 +28,8 @@ app.use('/testimonials',Testimonials)
 app.use('/gallery', Gallery)
 app.use('/home', Home)
 app.use('/contact', Contact)
+app.use('/services', Services)
+
 
 
 
