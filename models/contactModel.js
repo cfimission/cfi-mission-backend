@@ -12,6 +12,12 @@ const contactModelSchema = new mongoose.Schema({
   date: {
     type: Date,
     default: Date.now
+  },
+  Address:{
+    type:String,
+  },
+  message:{
+    type:String,
   }
 });
 
