@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+const validCategories = ["Weekly","Monthly","Other"]; 
 
 
 const servicesModelSchema = new mongoose.Schema({
@@ -14,6 +15,15 @@ const servicesModelSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  logo:{
+    type:String,
+    required:true
+  },
+  category: {
+    type: String,
+    required: true,
+    enum: validCategories
+  }
 });
 
 const ServicesModel = mongoose.model('Services', servicesModelSchema);
