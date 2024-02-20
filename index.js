@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import cors from 'cors'
 import { config } from 'dotenv';
+import axios from 'axios';
 const app = express();
 config({
   path:'./.env'
@@ -22,18 +23,6 @@ const User = mongoose.model('User', {
 
 app.use(express.json());
 
-app.post('/send-message', async (req, res) => {
-  const { name, email, message, contact, address } = req.body;
-  const whatsappMessage = `Name: ${name}%0AEmail: ${email}%0AMessage: ${message}%0AContact: ${contact}%0AAddress: ${address}`;
-
-  try {
-    await axios.get(`https://api.whatsapp.com/send?phone=8520800787&text=${whatsappMessage}`);
-    res.status(200).json({ success: true });
-  } catch (error) {
-    console.error('Error sending message to WhatsApp:', error);
-    res.status(500).json({ success: false, error: 'Error sending message to WhatsApp' });
-  }
-});
 app.use('/about',About)
 app.use('/testimonials',Testimonials)
 app.use('/gallery', Gallery)
