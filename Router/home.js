@@ -3,6 +3,22 @@ import Home from '../models/homeModel.js';
 
 const router = express.Router();
 
+
+let currentVerseIndex = 0;
+
+const incrementVerseIndex = (homes) => {
+  currentVerseIndex = (currentVerseIndex + 1) % homes[0].verces.length;
+};
+
+setInterval(() => {
+  Home.find()
+    .then(homes => {
+      incrementVerseIndex(homes);
+    })
+    .catch(error => {
+      console.error('Error fetching homes:', error);
+    });
+}, 86400000);
 // Create a new Home
 router.post('/', async (req, res) => {
   try {
@@ -13,23 +29,24 @@ router.post('/', async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
-
-// Get all Homes
 router.get('/', async (req, res) => {
   try {
     const homes = await Home.find();
     const bannerImage = homes[0].ImageUrls[0];
-    const recentImages = homes[0].ImageUrls.slice(1); 
+    const recentImages = homes[0].ImageUrls.slice(1);
+    const verces = homes[0].verces[currentVerseIndex]; // Add verces to response
     
     res.status(200).json({
       bannerImage: bannerImage,
-      recentImages: recentImages
+      recentImages: recentImages,
+      verces: verces // Include verces in response
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
-// Get all Homes
+
+// Get all Homes for admin
 router.get('/admin', async (req, res) => {
   try {
     const homes = await Home.find();
@@ -38,7 +55,6 @@ router.get('/admin', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
 
 // Get a specific Home by ID
 router.get('/:id', async (req, res) => {
