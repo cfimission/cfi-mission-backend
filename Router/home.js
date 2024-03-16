@@ -7,8 +7,14 @@ const router = express.Router();
 let currentVerseIndex = 0;
 
 const incrementVerseIndex = (homes) => {
-  currentVerseIndex = (currentVerseIndex + 1) % homes[0].verces.length;
+  if(homes[0].verces.length == currentVerseIndex){
+    currentVerseIndex = 0
+  }
+  else{
+    currentVerseIndex = (currentVerseIndex + 1) % homes[0].verces.length;
+  }
 };
+
 
 setInterval(() => {
   Home.find()
@@ -19,7 +25,6 @@ setInterval(() => {
       console.error('Error fetching homes:', error);
     });
 }, 86400000);
-// Create a new Home
 router.post('/', async (req, res) => {
   try {
     const home = new Home(req.body);
@@ -34,7 +39,7 @@ router.get('/', async (req, res) => {
     const homes = await Home.find();
     const bannerImage = homes[0].ImageUrls[0];
     const recentImages = homes[0].ImageUrls.slice(1);
-    const verces = homes[0].verces[currentVerseIndex]; // Add verces to response
+    const verces = homes[0].verces[currentVerseIndex];
     
     res.status(200).json({
       bannerImage: bannerImage,
