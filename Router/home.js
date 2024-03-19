@@ -27,17 +27,26 @@ router.get('/', async (req, res) => {
     if (currentDate.toDateString() === homeDocument.date.toDateString()) {
       verces = homeDocument.verces[homeDocument.counter];
     } else {
+      const updatedCounter = homeDocument.counter + 1;
+      let updateQuery = {
+        $set: { date: currentDate },
+        $inc: { counter: 1 },
+      };
+
+      // If the updated counter reaches the length of the verces array, reset it to 0
+      if (updatedCounter === homeDocument.verces.length) {
+        updateQuery = {
+          $set: { date: currentDate, counter: 0 },
+        };
+      }
+
       const updatedDocument = await Home.findOneAndUpdate(
         {},
-        {
-          $set: { date: currentDate },
-          $inc: { counter: 1 },
-        },
+        updateQuery,
         { new: true }
       );
 
-      const updatedCounter = updatedDocument.counter;
-      verces = updatedDocument.verces[updatedCounter];
+      verces = updatedDocument.verces[updatedDocument.counter];
     }
 
     res.status(200).json({
