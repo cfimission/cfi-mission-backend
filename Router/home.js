@@ -4,27 +4,6 @@ import Home from '../models/homeModel.js';
 const router = express.Router();
 
 
-let currentVerseIndex = 0;
-
-const incrementVerseIndex = (homes) => {
-  if(homes[0].verces.length == currentVerseIndex){
-    currentVerseIndex = 0
-  }
-  else{
-    currentVerseIndex = (currentVerseIndex + 1) % homes[0].verces.length;
-  }
-};
-
-
-setInterval(() => {
-  Home.find()
-    .then(homes => {
-      incrementVerseIndex(homes);
-    })
-    .catch(error => {
-      console.error('Error fetching homes:', error);
-    });
-}, 86400000);
 router.post('/', async (req, res) => {
   try {
     const home = new Home(req.body);
@@ -37,14 +16,34 @@ router.post('/', async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     const homes = await Home.find();
+    const currentDate = new Date();
+
     const bannerImage = homes[0].ImageUrls[0];
     const recentImages = homes[0].ImageUrls.slice(1);
-    const verces = homes[0].verces[currentVerseIndex];
-    
+
+    let verces;
+    const homeDocument = await Home.findOne({}); // Find the first document
+
+    if (currentDate.toDateString() === homeDocument.date.toDateString()) {
+      verces = homeDocument.verces[homeDocument.counter];
+    } else {
+      const updatedDocument = await Home.findOneAndUpdate(
+        {},
+        {
+          $set: { date: currentDate },
+          $inc: { counter: 1 },
+        },
+        { new: true }
+      );
+
+      const updatedCounter = updatedDocument.counter;
+      verces = updatedDocument.verces[updatedCounter];
+    }
+
     res.status(200).json({
       bannerImage: bannerImage,
       recentImages: recentImages,
-      verces: verces // Include verces in response
+      verces: verces,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });

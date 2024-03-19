@@ -13,6 +13,13 @@ const homeModelSchema = new mongoose.Schema({
   verces: {
     type: [String],
   },
+  counter:{
+    type:Number
+  },
+  date: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const Home = mongoose.model('Home', homeModelSchema);
